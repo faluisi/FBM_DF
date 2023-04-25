@@ -35,6 +35,7 @@ codeunit 61500 FBM_Migration_DF
         vendor: record Vendor;
         bankacc: record "Bank Account";
         itemle: record "Item Ledger Entry";
+        SalesCrMemoEntityBuffer: Record "Sales Cr. Memo Entity Buffer";
 
     procedure dataMigration()
     begin
@@ -81,6 +82,7 @@ codeunit 61500 FBM_Migration_DF
                                 fbmcust."No." := customer."No. 2";
                                 fbmcust."Valid From" := Today;
                                 fbmcust."Record Owner" := UserId;
+                                fbmcust.Active := true;
                                 fbmcust.Insert();
 
                             end;
@@ -101,9 +103,13 @@ codeunit 61500 FBM_Migration_DF
                             cos_new."Customer No." := cos."Customer No.";
 
                             cos_new."Operator No." := cos."Customer No.";
-                            cos_new."Site Code" := cos."Site Code 2";
+                            if cos."Site Code 2" <> '' then
+                                cos_new."Site Code" := cos."Site Code 2"
+                            else
+                                cos_new."Site Code" := cos."Site Code";
                             cos_new."Valid From" := Today;
                             cos_new."Record Owner" := UserId;
+
                             if cos_new.Insert() then begin
                             end;
                         until cos.Next() = 0;
@@ -133,6 +139,7 @@ codeunit 61500 FBM_Migration_DF
                                 site_new."Site Code" := cos."Site Code 2";
                                 site_new."Valid From" := Today;
                                 site_new."Record Owner" := UserId;
+                                site_new.Active := true;
                                 site_new.Insert()
                             end;
                         until site_old.Next() = 0;
@@ -158,8 +165,13 @@ codeunit 61500 FBM_Migration_DF
                             winupdate(nrec, crec, comp.Name, ntable);
                             custLE."FBM_Period End" := custLE."Period End";
                             custLE."FBM_Period Start" := custLE."Period Start";
-                            if (siheader.get(custLE."Document No.")) or (scheader.get(custLE."Document No.")) then
-                                custLE.Modify();
+                            if (siheader.get(custLE."Document No.")) or (scheader.get(custLE."Document No.")) then begin
+                                SalesCrMemoEntityBuffer.SetRange("Cust. Ledger Entry No.", custLE."Entry No.");
+                                SalesCrMemoEntityBuffer.SetRange(Posted, true);
+                                if not SalesCrMemoEntityBuffer.IsEmpty then
+                                    if scheader.get(SalesCrMemoEntityBuffer."No.") then
+                                        custLE.Modify();
+                            end;
                         until custLE.Next() = 0;
                     detcustLE.ChangeCompany(comp.Name);
                     nrec := detCustLE.count;
