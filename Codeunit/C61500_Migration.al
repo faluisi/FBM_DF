@@ -38,7 +38,7 @@ codeunit 61500 FBM_Migration_DF
         SalesCrMemoEntityBuffer: Record "Sales Cr. Memo Entity Buffer";
         fasub: record "FA Subclass";
         country: Record "Country/Region";
-        csite_new: record FBM_CustomerSite;
+        csite_new: record FBM_CustomerSite_C;
         csite: record "Customer-Site";
 
 
@@ -89,6 +89,7 @@ codeunit 61500 FBM_Migration_DF
                                 fbmcust."FBM_Payment Bank Code2" := customer."Payment Bank Code2";
                                 fbmcust."No." := customer."No. 2";
                                 fbmcust."Valid From" := Today;
+                                fbmcust."Valid To" := DMY2Date(31, 12, 2999);
                                 fbmcust."Record Owner" := UserId;
                                 fbmcust.Active := true;
                                 fbmcust.Insert();
@@ -101,6 +102,7 @@ codeunit 61500 FBM_Migration_DF
                             customer."FBM_Separate Halls Inv." := customer."Separate Halls Inv.";
                             customer."FBM_Customer Since" := customer."Customer Since";
                             customer.FBM_GrCode := customer."No. 2";
+                            customer."FBM_Name 3" := customer.Name;
                             customer.Modify();
                         until customer.Next() = 0;
                     csite.ChangeCompany(comp.Name);
@@ -117,6 +119,9 @@ codeunit 61500 FBM_Migration_DF
                             csite_new.Init();
                             csite_new."Customer No." := csite."Customer No.";
                             csite_new."Site Code" := csite."Site Code";
+                            csite_new.Contact := csite.Contact;
+                            csite_new."Contract Code" := csite."Contract Code";
+                            csite_new."Contract Code2" := csite."Contract Code2";
                             cos.SetRange("Customer No.", csite."Customer No.");
                             cos.SetRange("Site Code", csite."Site Code");
                             if cos.FindFirst() then
@@ -155,6 +160,7 @@ codeunit 61500 FBM_Migration_DF
                             else
                                 cos_new."Site Code" := compinfo."Custom System Indicator Text" + cos."Site Code";
                             cos_new."Valid From" := Today;
+                            cos_new."Valid To" := DMY2Date(31, 12, 2999);
                             cos_new."Record Owner" := UserId;
                             IF customer.Get(cos."Customer No.") THEN
                                 if country.get(customer."Country/Region Code") then
@@ -184,6 +190,7 @@ codeunit 61500 FBM_Migration_DF
                                     site_new."Site Code" := compinfo."Custom System Indicator Text" + cos."Site Code";
 
                                 site_new."Site Name" := site_old."Site Name";
+                                site_new."Site Name 2" := site_old."Site Name";
                                 site_new.Address := site_old.Address;
                                 site_new."Address 2" := site_old."Address 2";
                                 site_new.City := site_old.City;
@@ -196,6 +203,7 @@ codeunit 61500 FBM_Migration_DF
                                 site_new.Status := site_old.Status;
 
                                 site_new."Valid From" := Today;
+                                site_new."Valid To" := DMY2Date(31, 12, 2999);
                                 site_new."Record Owner" := UserId;
                                 site_new.Active := true;
                                 site_new.Insert()
@@ -544,6 +552,7 @@ codeunit 61500 FBM_Migration_DF
                                 fbmcust."FBM_Payment Bank Code2" := customer."Payment Bank Code2";
                                 fbmcust."No." := customer."No. 2";
                                 fbmcust."Valid From" := Today;
+                                fbmcust."Valid To" := DMY2Date(31, 12, 2999);
                                 fbmcust."Record Owner" := UserId;
                                 fbmcust.Active := true;
                                 fbmcust.Insert();
@@ -572,6 +581,9 @@ codeunit 61500 FBM_Migration_DF
                             csite_new.Init();
                             csite_new."Customer No." := csite."Customer No.";
                             csite_new."Site Code" := csite."Site Code";
+                            csite_new.Contact := csite.Contact;
+                            csite_new."Contract Code" := csite."Contract Code";
+                            csite_new."Contract Code2" := csite."Contract Code2";
                             cos.SetRange("Customer No.", csite."Customer No.");
                             cos.SetRange("Site Code", csite."Site Code");
                             if cos.FindFirst() then
@@ -610,6 +622,7 @@ codeunit 61500 FBM_Migration_DF
                             else
                                 cos_new."Site Code" := compinfo."Custom System Indicator Text" + cos."Site Code";
                             cos_new."Valid From" := Today;
+                            cos_new."Valid To" := DMY2Date(31, 12, 2999);
                             cos_new."Record Owner" := UserId;
                             IF customer.Get(cos."Customer No.") THEN
                                 if country.get(customer."Country/Region Code") then
@@ -651,6 +664,7 @@ codeunit 61500 FBM_Migration_DF
                                 site_new.Status := site_old.Status;
 
                                 site_new."Valid From" := Today;
+                                site_new."Valid To" := DMY2Date(31, 12, 2999);
                                 site_new."Record Owner" := UserId;
                                 site_new.Active := true;
                                 site_new.Insert()
