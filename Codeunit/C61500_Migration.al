@@ -87,12 +87,13 @@ codeunit 61500 FBM_Migration_DF
                                 fbmcust."FBM_Customer Since" := customer."Customer Since";
                                 fbmcust."FBM_Payment Bank Code" := customer."Payment Bank Code";
                                 fbmcust."FBM_Payment Bank Code2" := customer."Payment Bank Code2";
-                                fbmcust."No." := customer."No. 2";
+
                                 fbmcust."Valid From" := Today;
                                 fbmcust."Valid To" := DMY2Date(31, 12, 2999);
                                 fbmcust."Record Owner" := UserId;
                                 fbmcust.Active := true;
                                 fbmcust.Insert();
+                                fbmcust.Rename(customer."No. 2");
 
                             end;
                             customer.FBM_Group := customer.Group;
@@ -144,21 +145,30 @@ codeunit 61500 FBM_Migration_DF
                             winupdate(nrec, crec, comp.Name, ntable);
                             cos_new.Init();
                             IF customer.Get(cos."Customer No.") THEN begin
-                                if customer."No. 2" <> '' then
-                                    cos_new."Customer No." := customer."No. 2"
-                                else
+                                if customer."No. 2" <> '' then begin
+                                    cos_new."Customer No." := customer."No. 2";
+                                    cos_new."Cust Loc Code" := customer."No.";
+                                end
+                                else begin
                                     cos_new."Customer No." := compinfo."Custom System Indicator Text" + customer."No.";
-                                if customer."No. 2" <> '' then
-                                    cos_new."Operator No." := customer."No. 2"
-                                else
+                                end;
+                                if customer."No. 2" <> '' then begin
+                                    cos_new."Operator No." := customer."No. 2";
+                                    cos_new."Op Loc Code" := customer."No.";
+                                end
+                                else begin
                                     cos_new."Operator No." := compinfo."Custom System Indicator Text" + customer."No.";
-
-
+                                end;
                             end;
+
                             if cos."Site Code 2" <> '' then
                                 cos_new."Site Code" := cos."Site Code 2"
                             else
                                 cos_new."Site Code" := compinfo."Custom System Indicator Text" + cos."Site Code";
+                            cos_new."Site Loc Code" := cos."Site Code";
+                            if (customer."Country/Region Code" = 'PH') and (UpperCase(comp.Name) = 'FBM LTD') then
+                                cos_new.IsActive := false else
+                                cos_new.IsActive := true;
                             cos_new."Valid From" := Today;
                             cos_new."Valid To" := DMY2Date(31, 12, 2999);
                             cos_new."Record Owner" := UserId;
@@ -197,8 +207,8 @@ codeunit 61500 FBM_Migration_DF
                                 site_new."Post Code" := site_old."Post Code";
                                 site_new."Country/Region Code" := site_old."Country/Region Code";
                                 site_new.Indent := site_old.Indent;
-                                site_new."Contract Code" := site_old."Contract Code";
-                                site_new."Contract Code2" := site_old."Contract Code2";
+                                // site_new."Contract Code" := site_old."Contract Code";
+                                // site_new."Contract Code2" := site_old."Contract Code2";
                                 site_new."Vat Number" := cos."Vat Number";
                                 site_new.Status := site_old.Status;
 
@@ -272,6 +282,10 @@ codeunit 61500 FBM_Migration_DF
                                 // fa."FBM_Operator Name" := fa."Operator Name";
                                 // fa."FBM_Business Name" := fa."Business Name";
                                 fa.FBM_Status := fa.Status;
+                                cos_new.SetRange("Site Code", fa.FBM_Site);
+                                if cos.findfirst then
+                                    if customer.get(cos."Customer No.") then
+                                        fa.FBM_Subsidiary := format(fa.Lessee) + ' ' + customer."Country/Region Code";
                                 fa.modify;
                             until fa.Next() = 0;
                         fasub.ChangeCompany(comp.Name);
@@ -446,7 +460,7 @@ codeunit 61500 FBM_Migration_DF
                                 vendorle."FBM_approved user" := vendorle."approved user";
                                 vendorle."FBM_Approver Comment" := vendorle."Approver Comment";
 
-                                vendorle."FBM_Default Bank Account" := vendorle."Default Bank Account";
+                                //vendorle."FBM_Default Bank Account" := vendorle."Default Bank Account";
                                 vendorle.Modify();
                             until vendorle.Next() = 0;
                         detvendorle.ChangeCompany(comp.Name);
@@ -482,8 +496,7 @@ codeunit 61500 FBM_Migration_DF
                             repeat
                                 crec += 1;
                                 winupdate(nrec, crec, comp.Name, ntable);
-                                bankacc."FBM_Approval Batch Amount" := bankacc."Approval Batch Amount";
-                                bankacc."FBM_Approval Batch Amount2" := bankacc."Approval Batch Amount2";
+
                                 bankacc.Modify();
                             until bankacc.Next() = 0;
                         itemle.ChangeCompany(comp.Name);
@@ -550,12 +563,13 @@ codeunit 61500 FBM_Migration_DF
                                 fbmcust."FBM_Customer Since" := customer."Customer Since";
                                 fbmcust."FBM_Payment Bank Code" := customer."Payment Bank Code";
                                 fbmcust."FBM_Payment Bank Code2" := customer."Payment Bank Code2";
-                                fbmcust."No." := customer."No. 2";
+
                                 fbmcust."Valid From" := Today;
                                 fbmcust."Valid To" := DMY2Date(31, 12, 2999);
                                 fbmcust."Record Owner" := UserId;
                                 fbmcust.Active := true;
                                 fbmcust.Insert();
+                                fbmcust.Rename(customer."No. 2");
 
                             end;
                             customer.FBM_Group := customer.Group;
@@ -606,21 +620,31 @@ codeunit 61500 FBM_Migration_DF
                             winupdate(nrec, crec, comp.Name, ntable);
                             cos_new.Init();
                             IF customer.Get(cos."Customer No.") THEN begin
-                                if customer."No. 2" <> '' then
-                                    cos_new."Customer No." := customer."No. 2"
-                                else
+                                if customer."No. 2" <> '' then begin
+                                    cos_new."Customer No." := customer."No. 2";
+                                    cos_new."Cust Loc Code" := customer."No.";
+                                end
+                                else begin
                                     cos_new."Customer No." := compinfo."Custom System Indicator Text" + customer."No.";
-                                if customer."No. 2" <> '' then
-                                    cos_new."Operator No." := customer."No. 2"
-                                else
+                                end;
+                                if customer."No. 2" <> '' then begin
+                                    cos_new."Operator No." := customer."No. 2";
+                                    cos_new."Op Loc Code" := customer."No.";
+                                end
+                                else begin
                                     cos_new."Operator No." := compinfo."Custom System Indicator Text" + customer."No.";
-
-
+                                end;
                             end;
+
+
                             if cos."Site Code 2" <> '' then
                                 cos_new."Site Code" := cos."Site Code 2"
                             else
                                 cos_new."Site Code" := compinfo."Custom System Indicator Text" + cos."Site Code";
+                            cos_new."Site Loc Code" := cos."Site Code";
+                            if (customer."Country/Region Code" = 'PH') and (UpperCase(comp.Name) = 'FBM LTD') then
+                                cos_new.IsActive := false else
+                                cos_new.IsActive := true;
                             cos_new."Valid From" := Today;
                             cos_new."Valid To" := DMY2Date(31, 12, 2999);
                             cos_new."Record Owner" := UserId;
@@ -632,6 +656,7 @@ codeunit 61500 FBM_Migration_DF
                             end;
                         until cos.Next() = 0;
                     END;
+
                     site_old.ChangeCompany(comp.Name);
 
                     crec := 0;
@@ -658,10 +683,11 @@ codeunit 61500 FBM_Migration_DF
                                 site_new."Post Code" := site_old."Post Code";
                                 site_new."Country/Region Code" := site_old."Country/Region Code";
                                 site_new.Indent := site_old.Indent;
-                                site_new."Contract Code" := site_old."Contract Code";
-                                site_new."Contract Code2" := site_old."Contract Code2";
+                                // site_new."Contract Code" := site_old."Contract Code";
+                                // site_new."Contract Code2" := site_old."Contract Code2";
                                 site_new."Vat Number" := cos."Vat Number";
                                 site_new.Status := site_old.Status;
+
 
                                 site_new."Valid From" := Today;
                                 site_new."Valid To" := DMY2Date(31, 12, 2999);
@@ -670,6 +696,29 @@ codeunit 61500 FBM_Migration_DF
                                 site_new.Insert()
                             end;
                         until site_old.Next() = 0;
+                        fa.ChangeCompany(comp.Name);
+                        nrec := fa.count;
+                        crec := 0;
+                        ntable := fa.TableCaption;
+                        if fa.FindFirst() then
+                            repeat
+                                crec += 1;
+                                winupdate(nrec, crec, comp.Name, ntable);
+                                //fa."FBM_Date Prepared" := fa."Date Prepared";
+                                fa."FBM_Fa Posting Group Depr" := fa."Fa Posting Group Depr";
+                                //fa.FBM_Group := fa.Group;
+                                // fa.FBM_Hall := fa.Hall;
+                                // fa."FBM_Hall Status" := fa."Hall Status";
+                                // fa.FBM_Location := fa.Location;
+                                // fa."FBM_Operator Name" := fa."Operator Name";
+                                // fa."FBM_Business Name" := fa."Business Name";
+                                fa.FBM_Status := fa.Status;
+                                cos_new.SetRange("Site Code", fa.FBM_Site);
+                                if cos.findfirst then
+                                    if customer.get(cos."Customer No.") then
+                                        fa.FBM_Subsidiary := format(fa.Lessee) + ' ' + customer."Country/Region Code";
+                                fa.modify;
+                            until fa.Next() = 0;
                     END
                 end;
             until comp.Next() = 0;

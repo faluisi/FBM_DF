@@ -24,9 +24,9 @@
       "name": "test",
       "type": "al",
       "request": "launch",
-      "server": "http://10.0.0.4/devtest",
-      "serverInstance": "Dev",
-      "port": 4004,
+      "server": "http://10.0.0.4/bc220",
+      "serverInstance": "bc220",
+      "port": 2215,
       "authentication": "UserPassword",
       "startupObjectId": 22,
       "breakOnError": true,
@@ -71,6 +71,25 @@
   "longRunningSqlStatementsThreshold": 500,
   "numberOfSqlStatements": 10,
   "schemaUpdateMode": "ForceSync"
-}
+},
+{
+  "type": "al",
+  "request": "launch",
+  "name": "live",
+  "server": "http://10.0.0.4",
+  "serverInstance": "devLive",
+  "port": 2005,
+  "authentication": "UserPassword",
+  "startupObjectId": 22,
+  "startupObjectType": "Page",
+  "breakOnError": true,
+  "launchBrowser": true,
+  "enableLongRunningSqlStatements": true,
+  "enableSqlInformationDebugger": true,
+  
+  
+  
+} 
+
     ]
 }
