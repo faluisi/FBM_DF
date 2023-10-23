@@ -7,8 +7,8 @@
       "type": "al",
       "request": "launch",
       "server": "http://localhost",
-      "serverInstance": "bc200",
-      "port": 7049,
+      "serverInstance": "bc220",
+      "port": 7089,
       "authentication": "UserPassword",
       "startupObjectId": 22,
       "breakOnError": true,
@@ -20,6 +20,24 @@
       "numberOfSqlStatements": 10,
       "schemaUpdateMode": "ForceSync"
     },
+    {
+      "name": "test",
+      "type": "al",
+      "request": "launch",
+      "server": "http://10.0.0.4/devtest",
+      "serverInstance": "Devtest",
+      "port": 2215,
+      "authentication": "UserPassword",
+      "startupObjectId": 22,
+      "breakOnError": true,
+      "breakOnRecordWrite": false,
+      "launchBrowser": true,
+      "enableSqlInformationDebugger": true,
+      "enableLongRunningSqlStatements": true,
+      "longRunningSqlStatementsThreshold": 500,
+      "numberOfSqlStatements": 10,
+      "schemaUpdateMode": "ForceSync"
+  },
     {
       "name": "test",
       "type": "al",
@@ -37,6 +55,27 @@
       "longRunningSqlStatementsThreshold": 500,
       "numberOfSqlStatements": 10
   },
+  {
+    "type": "al",
+    "request": "launch",
+    "name": "live",
+    "server": "http://10.0.0.4",
+    "serverInstance": "devLive",
+    "port": 2005,
+    "authentication": "UserPassword",
+    "startupObjectId": 22,
+    "startupObjectType": "Page",
+    "breakOnError": true,
+    "launchBrowser": true,
+    "enableLongRunningSqlStatements": true,
+    "enableSqlInformationDebugger": true,
+    "schemaUpdateMode": "ForceSync"
+    
+    
+    
+    
+    
+},
   {
     "name": "test",
     "type": "al",
@@ -89,7 +128,24 @@
   
   
   
-} 
+} ,
+{
+  "name": "Microsoft cloud sandbox",
+  "request": "launch",
+  "type": "al",
+  "environmentType": "Sandbox",
+  "server": "https://businesscentral.dynamics.com",
+  "tenant": "9e0bb323-0ae5-4ab5-baed-25b8c94cf882",
+  "authentication": "AAD",
+  "environmentName": "DevTest",
+  "startupObjectId": 22,
+  "startupObjectType": "Page",
+  "breakOnError": "All",
+  "launchBrowser": true,
+  "enableLongRunningSqlStatements": true,
+  "enableSqlInformationDebugger": true,
+  "schemaUpdateMode": "ForceSync"
+}
 
     ]
 }

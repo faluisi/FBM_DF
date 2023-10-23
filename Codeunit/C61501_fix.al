@@ -1,6 +1,6 @@
 codeunit 61501 Fixes
 {
-    Permissions = tabledata "Purch. Inv. Line" = rimd;
+    Permissions = tabledata "Purch. Inv. Line" = rimd, tabledata "G/L Entry" = rimd;
     procedure fixqty()
 
     var
@@ -82,15 +82,38 @@ codeunit 61501 Fixes
                 else
                     if acccont.IsEmpty then begin
                         acccont.Init();
-                        acccont."User Security ID" := user."User Security ID";
-                        acccont."Role ID" := permset;
-                        acccont.Insert();
+                        acccont.validate("User Security ID", user."User Security ID");
+                        acccont.validate("Role ID", permset);
+                        acccont.Validate(Scope, acccont.Scope::System);
+                        acccont.Insert(true);
                     end;
 
             until user.next = 0;
-
-
+        message('Done');
     end;
+
+    procedure fixacy()
+    var
+        glentry: record "G/L Entry";
+        exchrate: record "Currency Exchange Rate";
+        crec: integer;
+    begin
+        exchrate.ChangeCompany('FBM Ltd');
+        glentry.SetFilter("Posting Date", '>=%1 & <=%2', DMY2Date(19, 04, 2023), DMY2Date(20, 04, 2023));
+        if glentry.FindFirst() then
+            repeat
+                if glentry."Additional-Currency Amount" = glentry.Amount then begin
+                    if abs(glentry.Amount) > 1 then begin
+                        crec += 1;
+                        exchrate.get('PHP', glentry."Posting Date");
+                        glentry.validate("Additional-Currency Amount", glentry.Amount / exchrate."Exchange Rate Amount");
+                        glentry.Modify();
+                    end;
+                end;
+            until glentry.Next() = 0;
+        message(format(crec));
+    end;
+
 
 
 

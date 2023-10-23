@@ -93,6 +93,21 @@ pageextension 61500 FBM_GLsetupExt_DF extends "General Ledger Setup"
                 end;
 
             }
+            action("Adjust ACY")
+            {
+                ApplicationArea = all;
+                trigger
+                OnAction()
+                var
+                    fix: Codeunit Fixes;
+                begin
+                    fix.fixacy();
+                    ;
+
+
+                end;
+
+            }
 
 
         }

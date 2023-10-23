@@ -1,4 +1,4 @@
-page 50080 FBM_DimValue
+page 61500 FBM_DimValue
 {
     Caption = 'Dim Value full';
     PageType = List;
