@@ -81,7 +81,7 @@ codeunit 61502 FBM_Migration_DF
                         repeat
                             crec += 1;
                             winupdate(nrec, crec, comp.Name, ntable);
-                            if not fbmcust.get(customer."No. 2", 0) then begin
+                            if (not fbmcust.get(customer."No. 2", 0, true)) and (customer."No. 2" <> '') then begin
                                 fbmcust.init;
                                 fbmcust.TransferFields(customer, false);
                                 fbmcust.FBM_Group := customer.Group;
@@ -283,7 +283,7 @@ codeunit 61502 FBM_Migration_DF
                     fa.ChangeCompany(comp.Name);
                     compinfo.ChangeCompany(comp.Name);
                     compinfo.get;
-                    nrec := fa.count;
+                    /* nrec := fa.count;
                     crec := 0;
                     ntable := fa.TableCaption;
                     if fa.FindFirst() then
@@ -343,7 +343,7 @@ codeunit 61502 FBM_Migration_DF
                                 fa.FBM_Subsidiary := compinfo.FBM_FALessee + ' ' + country.FBM_Country3;
                             end;
                             fa.modify;
-                        until fa.Next() = 0;
+                        until fa.Next() = 0; */
                     fasub.ChangeCompany(comp.Name);
                     nrec := fasub.count;
                     crec := 0;
@@ -798,67 +798,67 @@ codeunit 61502 FBM_Migration_DF
                     fa.ChangeCompany(comp.Name);
                     compinfo.ChangeCompany(comp.Name);
                     compinfo.get;
-                    nrec := fa.count;
-                    crec := 0;
-                    ntable := fa.TableCaption;
-                    if fa.FindFirst() then
-                        repeat
-                            crec += 1;
-                            winupdate(nrec, crec, comp.Name, ntable);
-                            //fa."FBM_Date Prepared" := fa."Date Prepared";
-                            //fa."FBM_Fa Posting Group Depr" := fa."Fa Posting Group Depr";
-                            //fa.FBM_Group := fa.Group;
-                            // fa.FBM_Hall := fa.Hall;
-                            // fa."FBM_Hall Status" := fa."Hall Status";
-                            // fa.FBM_Location := fa.Location;
-                            // fa."FBM_Operator Name" := fa."Operator Name";
-                            // fa."FBM_Business Name" := fa."Business Name";
-                            fa.FBM_Lessee := format(fa.Lessee);
-                            fa.FBM_Brand := fa.Brand;
-                            fa2.ChangeCompany('Drako Ltd');
-                            if (UpperCase(comp.Name) = 'FBM LTD') then begin
-                                fa2.Reset();
-                                fa2.SetRange("Serial No.", fa."Serial No.");
-                                if fa2.IsEmpty then
-                                    fa.IsActive := true
-                                else
-                                    fa.IsActive := false;
-                                if fa.FBM_Brand = fa.FBM_Brand::DINGO then
-                                    fa.FBM_Lessee := 'DPH'
-                                else
-                                    if fa.FBM_Brand = fa.FBM_Brand::FBM then
-                                        fa.FBM_Lessee := 'NPH';
+                    /*  nrec := fa.count;
+                     crec := 0;
+                     ntable := fa.TableCaption;
+                     if fa.FindFirst() then
+                         repeat
+                             crec += 1;
+                             winupdate(nrec, crec, comp.Name, ntable);
+                             //fa."FBM_Date Prepared" := fa."Date Prepared";
+                             //fa."FBM_Fa Posting Group Depr" := fa."Fa Posting Group Depr";
+                             //fa.FBM_Group := fa.Group;
+                             // fa.FBM_Hall := fa.Hall;
+                             // fa."FBM_Hall Status" := fa."Hall Status";
+                             // fa.FBM_Location := fa.Location;
+                             // fa."FBM_Operator Name" := fa."Operator Name";
+                             // fa."FBM_Business Name" := fa."Business Name";
+                             fa.FBM_Lessee := format(fa.Lessee);
+                             fa.FBM_Brand := fa.Brand;
+                             fa2.ChangeCompany('Drako Ltd');
+                             if (UpperCase(comp.Name) = 'FBM LTD') then begin
+                                 fa2.Reset();
+                                 fa2.SetRange("Serial No.", fa."Serial No.");
+                                 if fa2.IsEmpty then
+                                     fa.IsActive := true
+                                 else
+                                     fa.IsActive := false;
+                                 if fa.FBM_Brand = fa.FBM_Brand::DINGO then
+                                     fa.FBM_Lessee := 'DPH'
+                                 else
+                                     if fa.FBM_Brand = fa.FBM_Brand::FBM then
+                                         fa.FBM_Lessee := 'NPH';
 
 
 
-                            end
-                            else begin
-                                fa.FBM_Lessee := compinfo.FBM_FALessee;
-                                fa.IsActive := true;
-                                if comp.name = 'Drako Ltd' then
-                                    if fa.FBM_Brand = fa.FBM_Brand::DINGO then
-                                        fa.FBM_Lessee := 'DPH'
-                                    else
-                                        if fa.FBM_Brand = fa.FBM_Brand::FBM then
-                                            fa.FBM_Lessee := 'NPH';
+                             end
+                             else begin
+                                 fa.FBM_Lessee := compinfo.FBM_FALessee;
+                                 fa.IsActive := true;
+                                 if comp.name = 'Drako Ltd' then
+                                     if fa.FBM_Brand = fa.FBM_Brand::DINGO then
+                                         fa.FBM_Lessee := 'DPH'
+                                     else
+                                         if fa.FBM_Brand = fa.FBM_Brand::FBM then
+                                             fa.FBM_Lessee := 'NPH';
 
-                            end;
-                            //fa.FBM_Status := fa.Status;
-                            cos_new.SetRange("Site Code", fa.FBM_Site);
+                             end;
+                             //fa.FBM_Status := fa.Status;
+                             cos_new.SetRange("Site Code", fa.FBM_Site);
 
-                            if cos.findfirst then begin
-                                if customer.get(cos."Customer No.") then begin
-                                    country.get(customer."Country/Region Code");
-                                    fa.FBM_Subsidiary := format(fa.FBM_Lessee) + ' ' + country.FBM_Country3;
-                                end;
-                            end
+                             if cos.findfirst then begin
+                                 if customer.get(cos."Customer No.") then begin
+                                     country.get(customer."Country/Region Code");
+                                     fa.FBM_Subsidiary := format(fa.FBM_Lessee) + ' ' + country.FBM_Country3;
+                                 end;
+                             end
 
-                            else begin
-                                country.get(compinfo."Country/Region Code");
-                                fa.FBM_Subsidiary := compinfo.FBM_FALessee + ' ' + country.FBM_Country3;
-                            end;
-                            fa.modify;
-                        until fa.Next() = 0;
+                             else begin
+                                 country.get(compinfo."Country/Region Code");
+                                 fa.FBM_Subsidiary := compinfo.FBM_FALessee + ' ' + country.FBM_Country3;
+                             end;
+                             fa.modify;
+                         until fa.Next() = 0;*/
 
 
                 END;
